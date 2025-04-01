@@ -1,13 +1,14 @@
 class Turn
-  attr_reader :player1, :player2, :spoils_of_war
+  attr_reader :player1, :player2, :spoils_of_war, :type
 
   def initialize(player1, player2)
     @player1 = player1
     @player2 = player2
     @spoils_of_war = []
+    @type = set_type
   end
 
-  def type
+  def set_type
     if player1.deck.rank_of_card_at(0) == player2.deck.rank_of_card_at(0) && player1.deck.rank_of_card_at(2) == player2.deck.rank_of_card_at(2) 
       :mutually_assured_destruction
     elsif player1.deck.rank_of_card_at(0) == player2.deck.rank_of_card_at(0)
@@ -18,9 +19,9 @@ class Turn
   end
 
   def winner
-    if type == :basic
+    if @type == :basic
       player1.deck.rank_of_card_at(0) > player2.deck.rank_of_card_at(0) ? player1 : player2
-    elsif type == :war
+    elsif @type == :war
       player1.deck.rank_of_card_at(2) > player2.deck.rank_of_card_at(2) ? player1 : player2
     else
       "No Winner"
@@ -28,10 +29,10 @@ class Turn
   end
 
   def pile_cards
-    if type == :basic
+    if @type == :basic
       @spoils_of_war << player1.deck.remove_card
       @spoils_of_war << player2.deck.remove_card
-    elsif type == :war
+    elsif @type == :war
       3.times do
         @spoils_of_war << player1.deck.remove_card
         @spoils_of_war << player2.deck.remove_card
